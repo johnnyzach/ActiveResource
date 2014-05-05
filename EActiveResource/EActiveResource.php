@@ -415,14 +415,14 @@ abstract class EActiveResource extends CModel
         {
             $relatedClass=$md->relations[$name]->className;
             $route=$md->relations[$name]->route;
-            $relatedModel=$relatedClass::model()->populateRecord($this->queryRelated($route,'GET',$md->relations[$name]->criteria));
+            $relatedModel=$relatedClass::model()->populateRecord($this->queryRelated($route,'GET',$md->relations[$name]->criteria)->getData());
             $this->_related[$name]=$relatedModel;
         }
         else if($relation instanceof EActiveResourceHasManyRelation)
         {
             $relatedClass=$md->relations[$name]->className;
             $route=$md->relations[$name]->route;
-            $relatedModels=$relatedClass::model()->populateRecords($this->queryRelated($route,'GET',$md->relations[$name]->criteria));
+            $relatedModels=$relatedClass::model()->populateRecords($this->queryRelated($route,'GET',$md->relations[$name]->criteria)->getData());
             $this->_related[$name]=$relatedModels;
         }
 
