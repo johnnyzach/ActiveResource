@@ -105,7 +105,7 @@ class EActiveResourceConnection extends CApplicationComponent
                         && $this->queryCachingDuration>0
                         && $this->queryCacheID!==false
                         && ($cache=Yii::app()->getComponent($this->queryCacheID))!==null)
-        {
+        {            
             $this->queryCachingCount--;
             $cacheKey='yii:eactiveresourcerequest:'.$request->getUri().':'.$request->getMethod().':'.$this->recursiveImplode('-',$request->getHeader());
             $cacheKey.=':'.$this->recursiveImplode('#',$request->getData());
@@ -119,8 +119,16 @@ class EActiveResourceConnection extends CApplicationComponent
         $response=$request->run();
 
         //CACHE RESULT IF CACHE IS SET
-        if(isset($cache,$cacheKey))
+        if( ($cache = Yii::app()->getComponent($this->queryCacheID)) !== null) {            
+            
+            //create cacheKey
+            $cacheKey='yii:eactiveresourcerequest:'.$request->getUri().':'.$request->getMethod().':'.$this->recursiveImplode('-',$request->getHeader());
+            $cacheKey.=':'.$this->recursiveImplode('#',$request->getData());
+            //cache response
             $cache->set($cacheKey, $response, $this->queryCachingDuration, $this->queryCachingDependency);
+            Yii::trace('######## RESPONSE CACHED ########## with key='.$cacheKey);
+            
+        }
         
         if($response->hasErrors())
             $response->throwError();
